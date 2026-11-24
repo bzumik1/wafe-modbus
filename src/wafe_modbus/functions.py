@@ -34,7 +34,8 @@ class Functions(Component):
     short_boost = coil(7, writable=True)
     """Short boost, ends by itself after the short boost duration.
 
-    While either boost runs, the device reports both boost coils set.
+    While either boost runs, the device reports both boost coils set. Clearing
+    either coil ends any running boost.
     """
     long_boost = coil(8, writable=True)
     """Long boost, ends by itself after the long boost duration."""
@@ -57,6 +58,22 @@ class Functions(Component):
         """The mode whose coil is set, or ``None`` if none or several are."""
         active = [mode for mode, name in MODE_COILS.items() if getattr(self, name)]
         return active[0] if len(active) == 1 else None
+
+    @property
+    def boost_active(self) -> bool | None:
+        """Whether a boost runs."""
+        short, long = self.short_boost, self.long_boost
+        if short is None or long is None:
+            return None
+        return short or long
+
+    async def async_start_boost(self, *, long: bool = False) -> None:
+        """Start the short boost, or the long boost."""
+        await self.write("long_boost" if long else "short_boost", True)
+
+    async def async_stop_boost(self) -> None:
+        """End any running boost."""
+        await self.write("short_boost", False)
 
     async def async_set_operating_mode(self, mode: OperatingMode) -> None:
         """Select a mode. The device clears the other mode coils itself."""

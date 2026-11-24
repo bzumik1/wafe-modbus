@@ -46,7 +46,10 @@ class Settings(Component):
     state = enum(2001, UnitState, writable=_state_command)
     """Unit state. Takes only VENTILATION and STANDBY as a command."""
     fan_imbalance = integer(2002, unit="%", writable=_in_range(-100, 100))
-    """Positive slows the extract fan, negative slows the supply fan."""
+    """Positive slows the extract fan, negative slows the supply fan.
+
+    Per the vendor sheet. On a WAFE 201 E, writing it changed neither fan speed.
+    """
     co2_p = gauge(2003, 0.001, signed=False, writable=_PID)
     co2_i = gauge(2004, 0.001, signed=False, writable=_PID)
     co2_d = gauge(2005, 0.001, signed=False, writable=_PID)
@@ -107,8 +110,11 @@ class Settings(Component):
     compressor_cooling = boolean(2038, writable=True)
     compressor_heating = boolean(2039, writable=True)
     simulator = boolean(2040, writable=True)
-    simulator_sensors = integer(2041, signed=False, writable=_in_range(0, 0b111111))
-    """Bit 0 T1, bit 1 T2, bit 2 T3, bit 3 T4, bit 5 CO2."""
+    simulator_sensors = integer(2041, signed=False, writable=_in_range(0, 0b11111))
+    """Bit 0 T1, bit 1 T2, bit 2 T3, bit 3 T4, bit 4 CO2.
+
+    The vendor sheet says bit 5 for CO2; the device uses bit 4.
+    """
     simulated_outdoor_temperature = gauge(2042, 0.1, unit="°C", writable=_TEMPERATURE)
     simulated_supply_temperature = gauge(2043, 0.1, unit="°C", writable=_TEMPERATURE)
     simulated_extract_temperature = gauge(2044, 0.1, unit="°C", writable=_TEMPERATURE)

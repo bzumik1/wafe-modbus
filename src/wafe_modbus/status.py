@@ -49,10 +49,11 @@ class Status(Component):
     fan_2_speed = integer(1011, signed=False, unit="rpm")
     """Undocumented. Speed of the other fan."""
     target_airflow = integer(1012, signed=False, unit="m³/h")
-    """Undocumented. The airflow the mode asks for.
+    """Undocumented. The airflow the unit currently aims for.
 
-    In manual mode the manual airflow, in intelligent mode the CO2 demand. A
-    running boost, silent mode or standby is not reflected.
+    The manual airflow in manual mode, the CO2 demand in intelligent mode, the
+    maximum during a boost, the silent mode cap, and 0 in standby. The unit does
+    not measure the airflow it actually delivers.
     """
 
     @property

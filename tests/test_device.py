@@ -221,3 +221,22 @@ async def test_unknown_mode_decodes_to_none(w201e: MockModbusUnit) -> None:
     await device.async_update_readings()
     assert device.status.state is None
     assert device.functions.operating_mode is None
+
+
+async def test_boost_helpers(device: WafeUnit, w201e: MockModbusUnit) -> None:
+    await device.async_update_readings()
+    assert device.functions.boost_active is False
+
+    await device.functions.async_start_boost(long=True)
+    assert w201e.coil[8] is True
+    await device.functions.async_start_boost()
+    assert w201e.coil[7] is True
+    await device.async_update_readings()
+    assert device.functions.boost_active is True
+
+    await device.functions.async_stop_boost()
+    assert w201e.coil[7] is False
+
+
+async def test_boost_active_unknown_before_read(device: WafeUnit) -> None:
+    assert device.functions.boost_active is None

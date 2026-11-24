@@ -77,13 +77,13 @@ asyncio.run(main())
 The vendor register sheet ends at 1009. Registers 1010–1012 were found on a WAFE 201 E:
 
 - `fan_1_speed` (1010) and `fan_2_speed` (1011) are the speeds of the two fans in rpm. They fall to 0 when the fans stop, ramp up with them, and top out near 3200–3300. Which one is the supply fan is not confirmed.
-- `target_airflow` (1012) is the airflow the selected mode asks for: the manual airflow in manual mode, the CO2 demand in intelligent mode. A running boost, silent mode or standby does not show here.
+- `target_airflow` (1012) is the airflow the unit currently aims for: the manual airflow in manual mode, the CO2 demand in intelligent mode, the maximum during a boost, the silent mode cap, and 0 in standby. The unit does not measure the airflow it actually delivers; when a fan runs at its maximum speed, the delivered airflow is lower.
 
 ### Functions
 
 Coils 0–3 select the operating mode. Setting one clears the others. Scheduler mode with an empty weekly plan stops the fans.
 
-Coils 4–10 switch standby, holiday, silent, short boost, long boost, bypass off, and fireplace mode. The boosts end by themselves after `Settings.short_boost_duration` / `long_boost_duration`; while either boost runs, both boost coils read as set. Fireplace mode does nothing until an installer enables it. `bypass_off` follows `Settings.bypass_disabled`.
+Coils 4–10 switch standby, holiday, silent, short boost, long boost, bypass off, and fireplace mode. The boosts end by themselves after `Settings.short_boost_duration` / `long_boost_duration`; while either boost runs, both boost coils read as set, and clearing either coil ends it. `Functions.boost_active`, `async_start_boost()` and `async_stop_boost()` wrap this. Fireplace mode does nothing until an installer enables it. `bypass_off` follows `Settings.bypass_disabled`.
 
 Coils 11–13 are scheduler commands. The library reads them but does not write them.
 
