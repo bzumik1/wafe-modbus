@@ -4,6 +4,8 @@ Read and control WAFE heat recovery units with the ACE2 controller (WAFE 201 E a
 
 Built on [modbus-connection](https://github.com/home-assistant-libs/modbus-connection). The library never opens a connection. It takes a `ModbusUnit`, so the caller owns the link.
 
+WAFE s.r.o., the manufacturer, has been in bankruptcy since December 2023 (Regional Court in Brno, case KSBR 30 INS 19175/2023). This library talks to the units locally and does not depend on the manufacturer or its cloud.
+
 ## Installation
 
 ```bash
