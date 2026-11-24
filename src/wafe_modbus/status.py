@@ -59,5 +59,13 @@ class Status(Component):
     @property
     def bypass_active(self) -> bool | None:
         """Whether the summer bypass is open."""
+        return self._sub_mode_set(SubMode.BYPASS)
+
+    @property
+    def holiday_ventilation_active(self) -> bool | None:
+        """Whether the unit airs the house out during holiday mode."""
+        return self._sub_mode_set(SubMode.HOLIDAY_VENTILATION)
+
+    def _sub_mode_set(self, flag: SubMode) -> bool | None:
         sub_mode = self.sub_mode
-        return None if sub_mode is None else SubMode.BYPASS in sub_mode
+        return None if sub_mode is None else flag in sub_mode

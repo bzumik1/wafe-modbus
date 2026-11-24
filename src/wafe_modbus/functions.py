@@ -25,7 +25,7 @@ class Functions(Component):
     """Manual mode, ventilation runs at the manual airflow."""
     ultra_saving = coil(3, writable=True)
     """Ultra-saving mode."""
-    sleep = coil(4, writable=True)
+    standby = coil(4, writable=True)
     """Standby, the fans stop."""
     holiday = coil(5, writable=True)
     """Holiday mode, low energy with one airing a day."""

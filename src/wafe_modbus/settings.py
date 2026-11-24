@@ -77,9 +77,9 @@ class Settings(Component):
     bypass_airflow = integer(2016, signed=False, unit="m³/h", writable=_AIRFLOW)
     night_bypass_airflow = integer(2017, signed=False, unit="m³/h")
     """The device refuses writes."""
-    bypass_start_month = integer(2018, signed=False, writable=_MONTH)
-    """0 until set. Once set, the device takes only 1-12 and never 0 again."""
-    bypass_end_month = integer(2019, signed=False, writable=_MONTH)
+    bypass_start_month = integer(2018, signed=False, nan=0, writable=_MONTH)
+    """``None`` until set. The device then takes only 1-12 and never 0 again."""
+    bypass_end_month = integer(2019, signed=False, nan=0, writable=_MONTH)
     """Like ``bypass_start_month``."""
     bypass_hysteresis = integer(2020, writable=_in_range(-32768, 32767))
     bypass_min_outdoor_temperature = integer(2021, unit="°C")

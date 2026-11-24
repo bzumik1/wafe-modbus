@@ -63,7 +63,7 @@ asyncio.run(main())
 | Attribute | Register | Notes |
 |---|---|---|
 | `state` | 1002 | `UnitState`: ventilation, standby, holiday, manual |
-| `sub_mode` | 1003 | `SubMode` flags; `bypass_active` reads bit 0 |
+| `sub_mode` | 1003 | `SubMode` flags; `bypass_active` and `holiday_ventilation_active` read bits 0 and 1 |
 | `operating_mode` | 1004 | `OperatingMode`: the index of the active mode coil 0–3 |
 | `outdoor_temperature` | 1005 | T1, °C |
 | `supply_temperature` | 1006 | T2, °C |
@@ -91,7 +91,7 @@ Coils 11–13 are scheduler commands. The library reads them but does not write 
 
 Holding registers 2000–2071 follow the vendor sheet: operating mode, fan imbalance, CO2 PID and setpoint, airflow limits, bypass, boost durations, compressor, sensor simulator, scheduler slot, preheater, afterheater, and Voltdrive. Settings are written through `Settings.write(name, value)`, with range validation.
 
-Tested on a WAFE 201 E, the device refuses writes to 2011, 2013, 2017, 2021–2024 and 2066, even of their current value. The library maps them read-only. The bypass months 2018–2019 read 0 until set, and then take only 1–12. `state` (2001) takes only ventilation and standby.
+Tested on a WAFE 201 E, the device refuses writes to 2011, 2013, 2017, 2021–2024 and 2066, even of their current value. The library maps them read-only. The bypass months 2018–2019 read 0 (decoded as `None`) until set, and then take only 1–12. `state` (2001) takes only ventilation and standby.
 
 The vendor sheet has known errors. Input 1004 is not "AUT/MAN/SCH/USM" in that order: it follows the mode coils. `boost_airflow` (2011) does not hold m³/h.
 

@@ -23,6 +23,7 @@ async def test_decodes_a_captured_unit(device: WafeUnit) -> None:
     assert status.state is UnitState.VENTILATION
     assert status.sub_mode == SubMode(0)
     assert status.bypass_active is False
+    assert status.holiday_ventilation_active is False
     assert status.operating_mode is OperatingMode.INTELLIGENT
     assert status.outdoor_temperature == 2.2
     assert status.supply_temperature == 18.1
@@ -50,6 +51,8 @@ async def test_decodes_a_captured_unit(device: WafeUnit) -> None:
     assert settings.short_boost_duration == 900
     assert settings.long_boost_duration == 3600
     assert settings.bypass_disabled is False
+    assert settings.bypass_start_month is None
+    assert settings.bypass_end_month is None
     assert settings.preheat_start_temperature == -3.0
     assert settings.co2_p == 0.001
 
@@ -67,6 +70,7 @@ async def test_bypass_bit(w201e: MockModbusUnit) -> None:
     await device.async_update_readings()
     assert device.status.sub_mode == SubMode.BYPASS | SubMode.HOLIDAY_VENTILATION
     assert device.status.bypass_active is True
+    assert device.status.holiday_ventilation_active is True
 
 
 async def test_reads_stay_inside_the_served_ranges(
@@ -240,3 +244,15 @@ async def test_boost_helpers(device: WafeUnit, w201e: MockModbusUnit) -> None:
 
 async def test_boost_active_unknown_before_read(device: WafeUnit) -> None:
     assert device.functions.boost_active is None
+
+
+async def test_bypass_month_once_set(w201e: MockModbusUnit) -> None:
+    w201e.holding[2018] = 5
+    device = WafeUnit(w201e)
+    await device.async_update_settings()
+    assert device.settings.bypass_start_month == 5
+
+
+async def test_sub_mode_unknown_before_read(device: WafeUnit) -> None:
+    assert device.status.bypass_active is None
+    assert device.status.holiday_ventilation_active is None
