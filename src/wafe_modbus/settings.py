@@ -31,6 +31,7 @@ def _state_command(value: UnitState) -> UnitState:
 
 _AIRFLOW = _in_range(0, 1000)
 _PID = _in_range(0, 65535)
+_SCALED_PID = _in_range(0, 65.535)
 _MONTH = _in_range(1, 12)
 _TEMPERATURE = _in_range(-50, 50)
 _DURATION = _in_range(0, 65535)
@@ -50,9 +51,9 @@ class Settings(Component):
 
     Per the vendor sheet. On a WAFE 201 E, writing it changed neither fan speed.
     """
-    co2_p = gauge(2003, 0.001, signed=False, writable=_PID)
-    co2_i = gauge(2004, 0.001, signed=False, writable=_PID)
-    co2_d = gauge(2005, 0.001, signed=False, writable=_PID)
+    co2_p = gauge(2003, 0.001, signed=False, writable=_SCALED_PID)
+    co2_i = gauge(2004, 0.001, signed=False, writable=_SCALED_PID)
+    co2_d = gauge(2005, 0.001, signed=False, writable=_SCALED_PID)
     co2_setpoint = integer(2006, signed=False, unit="ppm", writable=_in_range(0, 5000))
     max_airflow = integer(2007, signed=False, unit="m³/h", writable=_AIRFLOW)
     """The device refuses values above what the model can deliver."""
@@ -96,9 +97,9 @@ class Settings(Component):
     """Also sets ``Functions.bypass_off``."""
     short_boost_duration = integer(2027, signed=False, unit="s", writable=_DURATION)
     long_boost_duration = integer(2028, signed=False, unit="s", writable=_DURATION)
-    compressor_p = gauge(2029, 0.001, signed=False, writable=_PID)
-    compressor_i = gauge(2030, 0.001, signed=False, writable=_PID)
-    compressor_d = gauge(2031, 0.001, signed=False, writable=_PID)
+    compressor_p = gauge(2029, 0.001, signed=False, writable=_SCALED_PID)
+    compressor_i = gauge(2030, 0.001, signed=False, writable=_SCALED_PID)
+    compressor_d = gauge(2031, 0.001, signed=False, writable=_SCALED_PID)
     compressor_max_comfort_time = integer(2032, signed=False, writable=_DURATION)
     compressor_eco = boolean(2033, writable=True)
     compressor_eco_offset = gauge(2034, 0.1, unit="°C", writable=_TEMPERATURE)

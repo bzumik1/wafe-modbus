@@ -256,3 +256,15 @@ async def test_bypass_month_once_set(w201e: MockModbusUnit) -> None:
 async def test_sub_mode_unknown_before_read(device: WafeUnit) -> None:
     assert device.status.bypass_active is None
     assert device.status.holiday_ventilation_active is None
+
+
+@pytest.mark.parametrize(
+    ("field", "address"), [("co2_p", 2003), ("compressor_d", 2031)]
+)
+async def test_scaled_pid_range(
+    device: WafeUnit, w201e: MockModbusUnit, field: str, address: int
+) -> None:
+    with pytest.raises(ValueError):
+        await device.settings.write(field, 65.536)
+    await device.settings.write(field, 65.535)
+    assert w201e.holding[address] == 65535
